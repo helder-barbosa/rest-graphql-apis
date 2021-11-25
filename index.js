@@ -14,10 +14,30 @@ const typeDefs = gql`
   type Query {
     getAllProducts : String
   }
+  type Product {
+    id: String
+    name: String
+  }
+  type Mutation {
+    createProduct(input: ProductInput): Product
+  }
+  input ProductInput{
+    id: String!
+    name: String!
+  }
 `
 const resolvers = {
   Query: {
-    getAllProducts: () => 'All products'
+    getAllProducts: () => [{ id: '1', name: 'All products' }]
+  },
+  Mutation: {
+    createProduct: (context, { input }) => {
+      const { id, name } = input
+      console.log(id, name);
+      return {
+        id, name
+      }
+    }
   }
 }
 
@@ -33,6 +53,6 @@ app.listen(3000, (err) => {
   if (err) {
     console.log('[ERRO]', err)
   } else {
-    console.log('Server running...')
+    console.log('[SERVER] Running...')
   }
 })
