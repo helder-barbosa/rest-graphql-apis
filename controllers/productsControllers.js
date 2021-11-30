@@ -1,3 +1,5 @@
+const db = require('../db')
+const Product = require('../models/product')(db)
 
 
 const remove = (req, res) => {
@@ -23,8 +25,9 @@ const put = (req, res) => {
   })
 }
 
-const create = (req, res) => {
-  console.log(req.body)
+const create = async (req, res) => {
+  const { product, price } = req.body
+  await Product.create([product, price])
   res.send({
     success: true,
     data: req.body
@@ -37,9 +40,10 @@ const getByID = (req, res) => {
   })
 }
 
-const getAll = (req, res) => {
+const getAll = async (req, res) => {
+  const products = await Product.findAll()
   res.send({
-    products: ['all products']
+    products
   })
 }
 
