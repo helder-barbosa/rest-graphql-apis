@@ -2,26 +2,33 @@ const db = require('../db')
 const Product = require('../models/product')(db)
 
 
-const remove = (req, res) => {
+const remove = async (req, res) => {
+  await Product.remove(req.params.id)
   res.send({
-    success: true,
-    data: 'id ' + req.params.id
+    success: true
   })
 }
 
-const patch = (req, res) => {
-  console.log(req.body)
+const patch = async (req, res) => {
+  const oldProduct = await Product.findByID(req.params.id)
+  if (req.body.product) {
+    oldProduct.product = req.body.product
+  }
+  if (req.body.price) {
+    oldProduct.price = req.body.price
+  }
+  await Product.update(req.params.id, [oldProduct.product, oldProduct.price])
   res.send({
-    success: true,
-    data: 'id ' + req.params.id
+    success: true
   })
 }
 
-const put = (req, res) => {
-  console.log(req.body)
+const put = async (req, res) => {
+  const { product, price } = req.body
+  await Product.update(req.params.id, [product, price])
+
   res.send({
-    success: true,
-    data: 'id ' + req.params.id
+    success: true
   })
 }
 
@@ -34,10 +41,9 @@ const create = async (req, res) => {
   })
 }
 
-const getByID = (req, res) => {
-  res.send({
-    name: 'Product ' + req.params.id
-  })
+const getByID = async (req, res) => {
+  const product = await Product.findByID(req.params.id)
+  res.send(product)
 }
 
 const getAll = async (req, res) => {
