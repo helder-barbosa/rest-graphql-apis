@@ -11,6 +11,12 @@ const remove = async (req, res) => {
 
 const patch = async (req, res) => {
   const oldProduct = await Product.findByID(req.params.id)
+  if (!oldProduct) {
+    return res.send({
+      success: false,
+      message: 'Product not found'
+    })
+  }
   if (req.body.product) {
     oldProduct.product = req.body.product
   }
@@ -18,6 +24,18 @@ const patch = async (req, res) => {
     oldProduct.price = req.body.price
   }
   await Product.update(req.params.id, [oldProduct.product, oldProduct.price])
+
+  if (req.body.categories) {
+    try {
+      await Product.updateCategories(req.params.id, req.body.categories)
+    } catch (e) {
+      return res.send({
+        success: false,
+        message: 'Categories not found'
+      })
+    }
+
+  }
   res.send({
     success: true
   })
@@ -47,7 +65,13 @@ const getByID = async (req, res) => {
 }
 
 const getAll = async (req, res) => {
-  const products = await Product.findAll()
+  let products = null
+  if (req.query.categoryId) {
+    products = await Product.findAllByCategory(req.query.categoryId)
+  } else {
+    const products = await Product.findAll()
+  }
+
   res.send({
     products
   })
