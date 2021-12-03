@@ -69,6 +69,11 @@ const init = connection => {
     const conn = await connection
     await conn.query('insert into images (product_id, description, url) values (?,?,?)', [productId, ...data])
   }
+
+  const removeImage = async (productId, imageId) => {
+    const conn = await connection
+    await conn.query('delete from images where product_id = ? and id = ?', [productId, imageId])
+  }
   const updateCategories = async (productId, categoryIds) => {
     const conn = await connection
     await conn.query('START TRANSACTION')
@@ -88,7 +93,8 @@ const init = connection => {
     findByID,
     findAllPaginated,
     findAllByCategory,
-    addImage
+    addImage,
+    removeImage,
   }
 }
 module.exports = init
