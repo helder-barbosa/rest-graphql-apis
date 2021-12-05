@@ -9,6 +9,9 @@ type Product {
 }
 type Mutation {
     createProduct(input: ProductInput): Product
+    updateProduct(id: String!, input: ProductUpdateInput): Product
+    deleteProduct(id: String!): Boolean
+    createImageOnProduct(productId: String!, input: ImageInput): Image
 }
 input ProductFilter {
     categoryId: String
@@ -16,4 +19,9 @@ input ProductFilter {
 input ProductInput{
     product: String!
     price: Float!
+}
+input ProductUpdateInput{
+    product: String
+    price: Float
+    categories: [String]
 }
